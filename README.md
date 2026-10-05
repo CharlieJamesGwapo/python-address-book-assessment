@@ -45,7 +45,7 @@ python -m uvicorn address_book.main:app --reload
 
 List and nearby results accept `limit` (1–100, default 100) and `offset` (0 or greater, default 0). Nearby results are ordered by exact distance, then ID, and include `distance_km`. Page with increasing offsets to retrieve every match.
 
-`radius_km` must be nonnegative. A zero radius returns addresses at exactly the requested coordinates.
+`radius_km` must be nonnegative. A zero radius returns addresses at the requested location, including equivalent coordinates across the antimeridian and at the poles.
 
 Address input requires `street`, `city`, `postal_code`, `country`, `latitude`, and `longitude`; `region` is optional. Text is trimmed and cannot be blank. Latitude must be between −90 and 90, longitude between −180 and 180. Unknown fields and invalid values return `422`; missing address IDs return `404`. A `PATCH` request must include at least one field. Only `region` may be set to `null`.
 

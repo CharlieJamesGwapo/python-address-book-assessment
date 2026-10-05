@@ -203,6 +203,30 @@ def test_zero_radius_returns_exact_coordinate_matches(client, address_payload):
 
 
 @pytest.mark.parametrize(
+    ("latitude", "longitude", "stored_latitude", "stored_longitude"),
+    [(0, 180, 0, -180), (90, 0, 90, 120)],
+)
+def test_zero_radius_includes_equivalent_global_coordinates(
+    client, address_payload, latitude, longitude, stored_latitude, stored_longitude
+):
+    create_address(
+        client,
+        {
+            **address_payload,
+            "street": "Same point",
+            "latitude": stored_latitude,
+            "longitude": stored_longitude,
+        },
+    )
+    response = client.get(
+        "/addresses/nearby",
+        params={"latitude": latitude, "longitude": longitude, "radius_km": 0},
+    )
+    assert response.status_code == 200
+    assert [item["street"] for item in response.json()] == ["Same point"]
+
+
+@pytest.mark.parametrize(
     "params",
     [
         {"latitude": 91, "longitude": 0, "radius_km": 1},
